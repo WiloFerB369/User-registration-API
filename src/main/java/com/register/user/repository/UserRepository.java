@@ -1,9 +1,11 @@
 package com.register.user.repository;
 
-import com.register.user.document.User;
+import com.register.user.repository.document.User;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
-public interface UserRepository extends MongoRepository< User, String>
+import java.util.Optional;
+
+public interface UserRepository extends MongoRepository<User, String>
 {
-    User findUserByEmail(String email);
+    User findByEmail(String email);
 }

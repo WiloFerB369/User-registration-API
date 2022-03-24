@@ -1,10 +1,15 @@
-package com.register.user.document;
+package com.register.user.repository.document;
 
 import com.register.user.controller.dto.UserDto;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 @Document
 public class User {
@@ -18,25 +23,28 @@ public class User {
 
     private String lastName;
 
+    @Indexed( unique = true)
     private String email;
 
     private String phone;
 
-    private String password;
+    private String passwordHash;
+
+    List<RoleEnum> roles;
 
     private Date created;
 
     public User() {
     }
 
-    public User (long dni, String name, String lastName, String email, String phone, String password)
+    public User (long dni, String name, String lastName, String email, String phone, String passwordHash)
     {
        this.dni =dni;
        this.name = name;
        this.lastName = lastName;
        this.email = email;
        this.phone = phone;
-       this.password = password;
+       this.passwordHash = passwordHash;
        this.created = new Date();
     }
 
@@ -47,16 +55,14 @@ public class User {
         this.lastName = userDto.getLastName();
         this.email = userDto.getEmail();
         this.phone = userDto.getPhone();
-        this.password = userDto.getPassword();
+        this.passwordHash = userDto.getPassword();
         this.created = new Date();
+        this.roles = new ArrayList<>(Collections.singleton(RoleEnum.USER));
+        this.passwordHash = BCrypt.hashpw( userDto.getPassword(), BCrypt.gensalt() );
     }
 
     public String getId() {
         return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public long getDni() {
@@ -99,20 +105,22 @@ public class User {
         this.phone = phone;
     }
 
-    public String getPassword() {
-        return password;
+    public String getPasswordHash() {
+        return passwordHash;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setPasswordHash(String passwordHash) {
+        this.passwordHash = passwordHash;
     }
 
     public Date getCreated() {
         return created;
     }
 
-    public void setCreated(Date created) {
-        this.created = created;
+    public List<RoleEnum> getRoles() {
+        return roles;
     }
+
+
 }
 

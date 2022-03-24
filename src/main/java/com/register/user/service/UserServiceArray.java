@@ -1,7 +1,6 @@
 package com.register.user.service;
 
-import com.register.user.document.User;
-import org.springframework.stereotype.Service;
+import com.register.user.repository.document.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,11 +11,11 @@ public class UserServiceArray
 
 
     public User create(User user) {
-        int size = usersList.size()+1;
+        /**int size = usersList.size()+1;
         User test = usersList.get(size);
         String id = test.getId()+1;
         user.setId(id);
-        usersList.add (user);
+        usersList.add (user);**/
         return user;
     }
 
@@ -37,7 +36,7 @@ public class UserServiceArray
         for(User user : usersList)
         {
           if(user.getDni() == dni) {
-              user.setPassword(password);
+              user.setPasswordHash(password);
               return user;
           }
         }

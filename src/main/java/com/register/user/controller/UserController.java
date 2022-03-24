@@ -1,18 +1,17 @@
 package com.register.user.controller;
 
 import com.register.user.controller.dto.UserDto;
-import com.register.user.document.User;
+import com.register.user.repository.document.User;
 import com.register.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/v1/user")
 public class UserController
 {
 
@@ -42,7 +41,7 @@ public class UserController
 
     @PutMapping("/{id}")
     public User updateById(@PathVariable String id, User user){
-        return userService.updatePasswordAndPhone( id, user );
+        return userService.update( id, user );
     }
 
     @DeleteMapping("/{id}")

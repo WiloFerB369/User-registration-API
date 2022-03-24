@@ -1,10 +1,12 @@
 package com.register.user.service;
 
-import com.register.user.document.User;
+import com.register.user.repository.document.User;
 import com.register.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -23,24 +25,34 @@ public class UserServiceMongoDB implements UserService
     }
 
     @Override
-    public User findByEmail(String email) {
-        return userRepository.findUserByEmail( email );
+    public Optional<User> findById(String id )
+    {
+        return Optional.of(userRepository.findById(id).get());
     }
 
     @Override
-    public Optional<User> findById(String id) {
-        return userRepository.findById( id );
+    public User findByEmail(String email)
+    {
+        return userRepository.findByEmail(email);
     }
 
     @Override
-    public User updatePasswordAndPhone(String id, User user) {
-        Optional<User> optionalUser = userRepository.findById(id);
-        if (optionalUser.isPresent())
+    public User update(String id, User user) {
+
+        if (userRepository.findById(id).isPresent())
         {
-            User userTemp = optionalUser.get();
+            User userTemp = userRepository.findById(id).get();
 
-            userTemp.setPassword(user.getPassword());
+            userTemp.setDni(user.getDni());
+            userTemp.setName(user.getName());
+            userTemp.setLastName(user.getLastName());
+            userTemp.setEmail(user.getEmail());
             userTemp.setPhone(user.getPhone());
+
+            if ( user.getPasswordHash() != null )
+            {
+                userTemp.setPasswordHash( BCrypt.hashpw( user.getPasswordHash(), BCrypt.gensalt() ));
+            }
 
             return userRepository.save(userTemp);
         }
@@ -55,5 +67,10 @@ public class UserServiceMongoDB implements UserService
             return true;
         }
         return false;
+    }
+
+    @Override
+    public List<User> all() {
+        return userRepository.findAll();
     }
 }
