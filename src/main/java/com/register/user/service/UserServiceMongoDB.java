@@ -1,5 +1,7 @@
 package com.register.user.service;
 
+import com.register.user.controller.dto.UserDto;
+import com.register.user.exception.UserNotFoundException;
 import com.register.user.repository.document.User;
 import com.register.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,43 +29,27 @@ public class UserServiceMongoDB implements UserService
     @Override
     public Optional<User> findById(String id )
     {
-        return Optional.of(userRepository.findById(id).get());
+        return userRepository.findById(id);
     }
 
     @Override
-    public User findByEmail(String email)
+    public Optional<User> findByEmail(String email)
     {
         return userRepository.findByEmail(email);
     }
 
     @Override
-    public User update(String id, User user) {
-
-        if (userRepository.findById(id).isPresent())
-        {
-            User userTemp = userRepository.findById(id).get();
-
-            userTemp.setDni(user.getDni());
-            userTemp.setName(user.getName());
-            userTemp.setLastName(user.getLastName());
-            userTemp.setEmail(user.getEmail());
-            userTemp.setPhone(user.getPhone());
-
-            if ( user.getPasswordHash() != null )
-            {
-                userTemp.setPasswordHash( BCrypt.hashpw( user.getPasswordHash(), BCrypt.gensalt() ));
-            }
-
-            return userRepository.save(userTemp);
-        }
-        return null;
+    public User update(User user, UserDto userDto)
+    {
+        user.update(userDto);
+        return userRepository.save(user);
     }
 
     @Override
-    public boolean deleteById(String id) {
-        if(userRepository.existsById(id))
+    public boolean deleteById( String id ) {
+        if(userRepository.existsById( id ))
         {
-            userRepository.deleteById(id);
+            userRepository.deleteById( id );
             return true;
         }
         return false;

@@ -121,6 +121,13 @@ public class User {
         return roles;
     }
 
+    public void update(UserDto userDto){
 
+        if ( userDto.getPassword() != null )
+        {
+            this.passwordHash =  BCrypt.hashpw( userDto.getPassword(), BCrypt.gensalt());
+        }
+
+    }
 }
 

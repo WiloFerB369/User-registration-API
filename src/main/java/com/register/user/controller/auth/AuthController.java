@@ -1,5 +1,6 @@
 package com.register.user.controller.auth;
 
+import com.register.user.exception.InvalidCredentialsException;
 import com.register.user.repository.document.User;
 import com.register.user.service.UserService;
 import io.jsonwebtoken.Jwts;
@@ -22,7 +23,7 @@ import static com.register.user.config.Constants.TOKEN_DURATION_MINUTES;
 
 
 @RestController
-@RequestMapping( "v1/auth" )
+@RequestMapping( "/v1/auth" )
 public class AuthController
 {
 
@@ -39,13 +40,21 @@ public class AuthController
     @PostMapping
     public TokenDto login( @RequestBody LoginDto loginDto )
     {
-        User user = userService.findByEmail( loginDto.getEmail());
-        if ( BCrypt.checkpw( loginDto.getPassword(), user.getPasswordHash() ) )
-        {
-            return generateTokenDto( user );
-        }
-        return null;
+        Optional<User> user = userService.findByEmail( loginDto.getEmail());
 
+        if(user.isPresent())
+        {
+            if ( BCrypt.checkpw( loginDto.getPassword(), user.get().getPasswordHash() ) )
+            {
+                return generateTokenDto( user.get() );
+            }
+            else{
+                throw new InvalidCredentialsException();
+            }
+        }
+        else{
+            throw new InvalidCredentialsException();
+        }
     }
 
     private String generateToken(User user, Date expirationDate )

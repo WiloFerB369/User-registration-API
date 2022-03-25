@@ -12,11 +12,11 @@ public interface UserService {
 
     Optional<User> findById(String id );
 
-    User findByEmail(String email );
+    Optional<User> findByEmail(String email );
 
     List<User> all();
 
     boolean deleteById( String id );
 
-    User update( String id, User user);
+    User update(User user, UserDto userDto);
 }

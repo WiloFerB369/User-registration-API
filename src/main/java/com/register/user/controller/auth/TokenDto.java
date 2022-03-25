@@ -4,9 +4,9 @@ import java.util.Date;
 
 public class TokenDto
 {
-    String token;
+    private String token;
 
-    Date expirationDate;
+    private Date expirationDate;
 
     public TokenDto( String token, Date expirationDate )
     {

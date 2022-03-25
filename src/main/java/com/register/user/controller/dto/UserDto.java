@@ -12,7 +12,7 @@ public class UserDto
 
     private final String phone;
 
-    private String password;
+    private final String password;
 
     public  UserDto(long dni, String name, String lastName, String email, String phone, String password)
     {
